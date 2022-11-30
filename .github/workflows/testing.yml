@@ -1,0 +1,35 @@
+name: Tests
+
+on:
+  push:
+    branches: [ main ]
+
+jobs:
+  testing:
+    runs-on: ubuntu-latest
+    env:
+      GTEST_DIR: /home/runner/googletest/googletest
+    steps:
+      - name: Install dependencies
+        run: |
+          sudo apt-get update && sudo apt-get install -y -f build-essential g++ cmake dos2unix
+      - name: Configure GoogleTest
+        run: |
+          git clone https://github.com/google/googletest ~/googletest
+          mkdir ~/googletest/build
+          cd ~/googletest/build && cmake .. -DBUILD_GMOCK=OFF
+          make
+          cd ~
+      - uses: actions/checkout@v3
+      - name: Configure files to unix line feed
+        run: dos2unix test_runner.sh --safe --quiet
+      - name: Build project
+        run: |
+          make clean
+          make
+      - name: Test runner
+        run: ./tappityTest
+      - name: Coverage analysis
+        run: |
+          gcov -b tappity.cpp
+          cat tappity.cpp.gcov
