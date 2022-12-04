@@ -122,6 +122,15 @@ TEST(tappityTest, accuracy_both_empty_NOT_0)
     ASSERT_NE(actual, 0);
 }
 
+TEST(tappityTest, accuracy_same_string)
+{
+	// This will test when both the reference and entry are the same string but one is capitalized and the other isn't
+	tappity instance("You are so good at typing!");
+	instance.entry("You are so good at typing!");
+	double actual = instance.accuracy();
+    ASSERT_EQ(actual, 100);
+}
+
 TEST(tappityTest, accuracy_same_but_different_case)
 {
 	// This will test when both the reference and entry are the same string but one is capitalized and the other isn't
